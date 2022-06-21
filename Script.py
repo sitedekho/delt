@@ -1,7 +1,9 @@
 class script(object):
     START_TXT = """<b> HELLO  {},
 MY NAME IS <a href=https://t.me/{}>{}</a>, I CAN PROVIDE YOU MOVIES-SERIES, 😍
+
 📌Bot will be off Everyday 12am - 7am at night for saving heroku dyno hours!😐</b>
+
 <br><i>📌If Bot Not Working Then Use Our Website For Latest Content👉 <a href='https://getlinkz.xyz/610-2'>WEBSITE</a> </i></br>"""
     HELP_TXT = """HEY {}
 MY COMMANDS."""
