@@ -395,12 +395,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
             f_caption = f"{title}"
         await query.answer()
         await client.send_cached_media(
-            chat_id=query.from_user.id,
+             chat_id=query.from_user.id,
             file_id=file_id,
             caption=f_caption,
             protect_content=True if ident == 'checksubp' else False
         )
-            elif query.data == "pages":
+    elif query.data == "pages":
         await query.answer()
     elif query.data == "start":
         buttons = [[
