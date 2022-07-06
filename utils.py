@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
+from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, DROPLINK_API
 from imdb import IMDb
 import asyncio
 from pyrogram.types import Message
@@ -375,3 +375,8 @@ def humanbytes(size):
         size /= power
         n += 1
     return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+
+
+async def droplink_url(url):
+    text = f'https://droplink.co/st?api={DROPLINK_API}&url={url}'
+    return text

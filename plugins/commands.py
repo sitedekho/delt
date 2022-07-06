@@ -8,7 +8,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
 from database.users_chats_db import db
-from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT
+from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, AUTO_DELETE, AUTO_DELETE_TIME
 from utils import get_settings, get_size, is_subscribed, save_group_settings, temp
 from database.connections_mdb import active_connection
 import re
@@ -134,21 +134,28 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{title}"
             try:
-                await client.send_cached_media(
+                txt = await client.send_cached_media(
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
                     )
+                if AUTO_DELETE:
+                    await asyncio.sleep(AUTO_DELETE_TIME)
+                    await txt.delete()
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
-                await client.send_cached_media(
+                txt = await client.send_cached_media(
                     chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
                     )
+                if AUTO_DELETE:
+                    await asyncio.sleep(AUTO_DELETE_TIME)
+                    await txt.delete()
+                    
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
@@ -221,6 +228,9 @@ async def start(client, message):
                 except:
                     return
             await msg.edit_caption(f_caption)
+            await asyncio.sleep(10)
+            await msg.delete()
+            
             return
         except:
             pass
@@ -237,12 +247,15 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
-    await client.send_cached_media(
+    txt = await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
         caption=f_caption,
         protect_content=True if pre == 'filep' else False,
         )
+    if AUTO_DELETE:
+        await asyncio.sleep(AUTO_DELETE_TIME)
+        await txt.delete()
                     
 
 @Client.on_message(filters.command('channel') & filters.user(ADMINS))
